@@ -23,6 +23,11 @@ void BrickManager::createBricks(int rows, int cols, float brickWidth, float bric
     }
 }
 
+void BrickManager::clearBricks() //clear brick vector and free memory
+{
+    _bricks = std::vector<Brick>(); 
+}
+
 void BrickManager::render()
 {
     for (auto& brick : _bricks) {
