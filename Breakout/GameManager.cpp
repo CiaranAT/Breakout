@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include "Ball.h"
 #include "PowerupManager.h"
+#include <cmath>
 #include <iostream>
 
 GameManager::GameManager(sf::RenderWindow* window)
@@ -10,8 +11,9 @@ GameManager::GameManager(sf::RenderWindow* window)
 {
     _font.loadFromFile("font/montS.ttf");
     _masterText.setFont(_font);
-    _masterText.setPosition(50, 400);
-    _masterText.setCharacterSize(48);
+    _masterText.setOrigin(175, 0);
+    _masterText.setPosition(window->getSize().x/2, window->getSize().y/2);
+    _masterText.setCharacterSize(64);
     _masterText.setFillColor(sf::Color::Yellow);
 }
 
