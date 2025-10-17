@@ -40,6 +40,7 @@ void GameManager::update(float dt)
             _resetHold = RESET_TIME_BUFFER;
             _isGameResetting = false;
         }
+        return;
     }
 
     _powerupInEffect = _powerupManager->getPowerupInEffect();
@@ -128,6 +129,8 @@ void GameManager::resetGame()
 {
     _time = 0.f, _lives = 3, _pauseHold = 0.f, _levelComplete = false,
         _powerupInEffect = { none,0.f }, _timeLastPowerupSpawned = 0.f;
+
+    _ball->resetBall();
 
     _brickManager->clearBricks();
     _brickManager->createBricks(5, 10, 80.0f, 30.0f, 5.0f);

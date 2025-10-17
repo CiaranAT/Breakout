@@ -3,7 +3,7 @@
 
 Ball::Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager)
     : _window(window), _velocity(velocity), _gameManager(gameManager),
-    _timeWithPowerupEffect(0.f), _isFireBall(false), _isAlive(true), _direction({1,1})
+    _timeWithPowerupEffect(0.f), _isFireBall(false), _isAlive(true), _direction({ 1,1 }), _isBallRespawning(true), _respawnHold(RESPAWN_TIME_DELAY), _respawnBlinkTimer(RESPAWN_BLINK_ON_DURATION)
 {
     _sprite.setRadius(RADIUS);
     _sprite.setFillColor(sf::Color::Cyan);
@@ -16,6 +16,31 @@ Ball::~Ball()
 
 void Ball::update(float dt)
 {
+    //wait to respawn the ball, blink the ball while it is waiting
+    if (_isBallRespawning) {
+        if (_respawnHold > 0.f) _respawnHold -= dt;
+        if (_respawnBlinkTimer > 0.f) _respawnBlinkTimer -= dt;
+
+        if (_respawnBlinkTimer <= 0.f) {
+            if (_sprite.getFillColor() == sf::Color::Cyan) {
+                _sprite.setFillColor(sf::Color::Transparent);
+                _respawnBlinkTimer = RESPAWN_BLINK_OFF_DURATION;
+            }
+            else if (_sprite.getFillColor() == sf::Color::Transparent) {
+                _sprite.setFillColor(sf::Color::Cyan);
+                _respawnBlinkTimer = RESPAWN_BLINK_ON_DURATION;
+            }
+            
+        }
+        if (_respawnHold <= 0.f) {
+            _respawnHold = RESPAWN_TIME_DELAY;
+            _respawnBlinkTimer = RESPAWN_BLINK_ON_DURATION;
+            _isBallRespawning = false;
+            _sprite.setFillColor(sf::Color::Cyan);
+        }
+        return;
+    }
+
     // check for powerup, tick down or correct
     if (_timeWithPowerupEffect > 0.f)
     {
@@ -62,9 +87,9 @@ void Ball::update(float dt)
     // lose life bounce
     if (position.y > windowDimensions.y)
     {
-        _sprite.setPosition(0, 300);
-        _direction = { 1, 1 };
+        resetBall();
         _gameManager->loseLife();
+        _isBallRespawning = true;
     }
 
     // collision with paddle
@@ -95,6 +120,12 @@ void Ball::update(float dt)
 void Ball::render()
 {
     _window->draw(_sprite);
+}
+
+void Ball::resetBall()
+{
+    _sprite.setPosition(0, 300);
+    _direction = { 1, 1 };
 }
 
 void Ball::setVelocity(float coeff, float duration)
