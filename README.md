@@ -35,3 +35,4 @@ fire ball (green)
 
 * <Add information to this section about the time you've taken for this task along with a professional changelist.>
 * Fixed compiler issues in the code - 10 minutes
+* Added basic gameloop, game resets when level is completed or game over, with a delay where the game is paused in-between - 1 hour
