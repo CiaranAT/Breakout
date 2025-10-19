@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-
+#include "POWERUPS.h"
 
 class GameManager;  // forward declaration
 
@@ -15,6 +15,8 @@ public:
     void resetBall();
     void setVelocity(float coeff, float duration);
     void setFireBall(float duration);
+    void setPowerup(float duration, POWERUPS newpowerup);
+    POWERUPS getPowerup();
 
 private:
     sf::CircleShape _sprite;
@@ -27,6 +29,7 @@ private:
     bool _isFireBall;
     bool _isBallRespawning;
     float _timeWithPowerupEffect;
+    POWERUPS _currentPowerup;
 
     GameManager* _gameManager;  // Reference to the GameManager
 

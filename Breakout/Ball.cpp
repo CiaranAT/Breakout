@@ -3,7 +3,7 @@
 
 Ball::Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager)
     : _window(window), _velocity(velocity), _gameManager(gameManager),
-    _timeWithPowerupEffect(0.f), _isFireBall(false), _isAlive(true), _direction({ 1,1 }), _isBallRespawning(true), _respawnHold(RESPAWN_TIME_DELAY), _respawnBlinkTimer(RESPAWN_BLINK_ON_DURATION)
+    _timeWithPowerupEffect(0.f), _isFireBall(false), _isAlive(true), _direction({ 1,1 }), _isBallRespawning(true), _respawnHold(RESPAWN_TIME_DELAY), _respawnBlinkTimer(RESPAWN_BLINK_ON_DURATION), _currentPowerup(POWERUPS::none)
 {
     _sprite.setRadius(RADIUS);
     _sprite.setFillColor(sf::Color::Cyan);
@@ -52,17 +52,26 @@ void Ball::update(float dt)
             _velocity = VELOCITY;   // reset speed.
         else
         {
-            setFireBall(0);    // disable fireball
+            setPowerup(0, POWERUPS::none);    // disable powerup
             _sprite.setFillColor(sf::Color::Cyan);  // back to normal colour.
         }        
     }
 
-    // Fireball effect
-    if (_isFireBall)
+    int flicker = rand() % 50 + 205; // Random value between 205 and 255
+    switch (_currentPowerup)
     {
+    case fireBall:
+
         // Flickering effect
-        int flicker = rand() % 50 + 205; // Random value between 205 and 255
+        
         _sprite.setFillColor(sf::Color(flicker, flicker / 2, 0)); // Orange flickering color
+        break;
+
+    case bombBall:
+
+        // Flickering effect
+        _sprite.setFillColor(sf::Color(255, 255, 0)); // Orange flickering color
+        break;
     }
 
     // Update position with a subtle floating-point error
@@ -105,8 +114,8 @@ void Ball::update(float dt)
     }
 
     // collision with bricks
-    int collisionResponse = _gameManager->getBrickManager()->checkCollision(_sprite, _direction);
-    if (_isFireBall) return; // no collisisons when in fireBall mode.
+    int collisionResponse = _gameManager->getBrickManager()->checkCollision(_sprite, _direction, _currentPowerup);
+    if (_currentPowerup == POWERUPS::fireBall) return; // no collisisons when in fireBall mode.
     if (collisionResponse == 1)
     {
         _direction.x *= -1; // Bounce horizontally
@@ -144,4 +153,21 @@ void Ball::setFireBall(float duration)
     }
     _isFireBall = false;
     _timeWithPowerupEffect = 0.f;    
+}
+
+void Ball::setPowerup(float duration, POWERUPS newpowerup)
+{
+    if (duration)
+    {
+        _currentPowerup = newpowerup;
+        _timeWithPowerupEffect = duration;
+        return;
+    }
+    _currentPowerup = none;
+    _timeWithPowerupEffect = 0.f;
+}
+
+POWERUPS Ball::getPowerup()
+{
+    return _currentPowerup;
 }

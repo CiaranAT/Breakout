@@ -36,3 +36,4 @@ fire ball (green)
 * Fixed compiler issues in the code - 10 minutes
 * Added basic gameloop, game resets when level is completed or game over, with a delay where the game is paused in-between - 1 hour
 * The ball now waits a delay and blinks before moving when respawning - 1 hour
+* Added bomb ball powerup, which destroys bricks surrounding the initial brick hit by the ball - 1 hour
